@@ -9,6 +9,8 @@ app.config['SECRET_KEY']= "password"
 def home():
     return render_template("html/login.html")
 
+@app.route("/adm")
+
 @app.route("/login", methods=['POST'])
 def login():
     usuario = request.form.get('nome')
@@ -18,6 +20,8 @@ def login():
         cont = 0
         for c in lista:
             cont+=1
+            if usuario == 'adm' and senha == '000':
+                return redirect('/adm')
             if usuario == c['nome'] and senha == c['senha']:
                 return render_template("html/acesso.html", nomeUsuario=c['nome'])
             if cont >= len(lista):
