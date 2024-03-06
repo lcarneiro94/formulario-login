@@ -6,5 +6,9 @@
     {
         "nome": "joao",
         "senha": "456"
+    },
+    {
+        "nome": "carlos",
+        "senha": "789"
     }
 ]

@@ -9,25 +9,49 @@ app.config['SECRET_KEY']= "password"
 def home():
     return render_template("html/login.html")
 
-@app.route("/adm")
-
-@app.route("/login", methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    usuario = request.form.get('nome')
+
+    nome = request.form.get('nome')
     senha = request.form.get('senha')
-    with open('usuarios.json') as usuarios:
-        lista = json.load(usuarios)
+
+    with open('usuarios.json') as usuariosTemp:
+        usuarios = json.load(usuariosTemp)
         cont = 0
-        for c in lista:
-            cont+=1
-            if usuario == 'adm' and senha == '000':
-                return redirect('/adm')
-            if usuario == c['nome'] and senha == c['senha']:
-                return render_template("html/acesso.html", nomeUsuario=c['nome'])
-            if cont >= len(lista):
-                flash('Usuario inválido')
+        for usuario in usuarios:
+            cont += 1
+
+            if nome == 'adm' and senha == '000':
+                return render_template("html/administrador.html")
+
+            if usuario['nome'] == nome and usuario['senha'] == senha:
+                return render_template("html/usuarios.html")
+            
+            if cont >= len(usuarios):
+                flash('USUARIO INVALIDO')
                 return redirect("/")
 
+@app.route("/cadastrarUsuario", methods=['POST'])
+def cadastrarUsuario():
+    user = []
+    nome = request.form.get('nome')
+    senha = request.form.get('senha')
+    user = [
+        {
+            "nome": nome,
+            "senha": senha
+        }
+    ]
+    with open('usuarios.json') as usuariosTemp:
+        usuarios = json.load(usuariosTemp)
 
-if __name__ in '__main__':
+    usuarioNovo = usuarios + user
+
+    with open('usuarios.json', 'w' ) as gravarTemp:
+        json.dump(usuarioNovo, gravarTemp, indent=4)
+
+    return render_template("html/administrador.html")
+
+
+if __name__ in "__main__":
     app.run(debug=True)
